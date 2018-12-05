@@ -30,6 +30,8 @@ namespace game {
 		void drawCredits() {
 			DrawText("Game by Julian Serulnikov", GetScreenWidth() / 2 - auxAllignment0, GetScreenHeight() / 2 - auxAllignment1, 50, WHITE);
 			DrawText("Made with Raylib", GetScreenWidth() / 2 - 210, GetScreenHeight() / 2 - 130, 50, WHITE);
+			DrawText("Sprites made with Piskel", GetScreenWidth() / 2 - 310, GetScreenHeight() / 2 - 80, 50, WHITE);
+			DrawText("Music made with Bosca Ceoil", GetScreenWidth() / 2 - 340, GetScreenHeight() / 2 - 30, 50, WHITE);
 			DrawRectangle(static_cast<int>(back.position.x), static_cast<int>(back.position.y), static_cast<int>(back.size.x), static_cast<int>(back.size.y), WHITE);
 			DrawText("BACK", static_cast<int>(back.position.x) + 32, static_cast<int>(back.position.y) + 10, 45, BLACK);
 			DrawText(FormatText("v%0i.%1i",version, subVersion), GetScreenWidth() - 150, GetScreenHeight() - 20, 20, GRAY);
