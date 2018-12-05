@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Screens">
+      <UniqueIdentifier>{fce32fd5-3ce1-4ed8-b6c3-16496a9c39b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Screen Headers">
+      <UniqueIdentifier>{d2487d3a-5d2d-40a4-8925-5ac263ce6a6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Objects">
+      <UniqueIdentifier>{cb04ea51-8129-467f-bb44-bd2e1504d325}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Object Headers">
+      <UniqueIdentifier>{8de02336-ee2c-493d-a25d-6434033f84c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source">
+      <UniqueIdentifier>{5d45a5d9-bcc9-424d-8d2c-c4864b04bdcc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\game-screen.cpp">
+      <Filter>Screens</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\menu-screen.cpp">
+      <Filter>Screens</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\credit-screen.cpp">
+      <Filter>Screens</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\gameover-screen.cpp">
+      <Filter>Screens</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\help-screen.cpp">
+      <Filter>Screens</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\flow-manager.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\menu-screen.h">
+      <Filter>Screen Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\help-screen.h">
+      <Filter>Screen Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\game-screen.h">
+      <Filter>Screen Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\credit-screen.h">
+      <Filter>Screen Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\gameover-screen.h">
+      <Filter>Screen Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\flow-manager.h">
+      <Filter>source</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
