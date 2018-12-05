@@ -1,6 +1,8 @@
 #ifndef FLOW_MANAGER_H
 #define FLOW_MANAGER_H
 
+#include <iostream>
+
 #include "raylib.h"
 
 #include "menu-screen.h"
@@ -13,12 +15,16 @@ namespace game {
 	enum gamestate {
 		menustate, gameplaystate, gameoverstate, creditsstate,helpstate,
 	};
+	struct button {
+		Vector2 position;
+		Vector2 size;
+		std::string text;
+	};
 	extern bool gameSwitch;
 	extern gamestate currentstate;
-	extern const float version;
+	extern const unsigned int version, subVersion;
+	extern Vector2 mousePosition;
 	void initGame();
-	void generalDraw();
-	void gameLoop();
 	void exitGame();
 }
 #endif
