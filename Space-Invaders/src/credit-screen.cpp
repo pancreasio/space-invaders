@@ -10,7 +10,7 @@ namespace game {
 		}
 		void initCredits() {
 			back.position.x = GetScreenWidth() / 2.0f - 110.0f;
-			back.position.y = GetScreenHeight() / 2.0f + 100.0f;
+			back.position.y = GetScreenHeight() / 2.0f + 210.0f;
 			back.size.x = 220.0f;
 			back.size.y = 60.0;
 		}

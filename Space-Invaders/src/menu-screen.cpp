@@ -3,12 +3,18 @@
 namespace game {
 	namespace menuspace {
 		button start;
+		button help;
 		button quit;
 		button credits;
 
 		void startGame() {
 			gameplayspace::initGameplay();
 			currentstate = gameplaystate;
+		}
+
+		void goToHelp() {
+			helpspace::initHelp();
+			currentstate = helpstate;
 		}
 
 		void viewCredits() {
@@ -21,12 +27,16 @@ namespace game {
 			start.position.y = GetScreenHeight() / 2.0f;
 			start.size.x = 220.0f;
 			start.size.y = 60.0f;
+			help.position.x = GetScreenWidth() / 2.0f - 110.0f;
+			help.position.y = GetScreenHeight() / 2.0f + 70.0f;
+			help.size.x = 220.0f;
+			help.size.y = 60.0f;
 			credits.position.x = GetScreenWidth() / 2.0f - 110.0f;
-			credits.position.y = GetScreenHeight() / 2.0f + 70.0f;
+			credits.position.y = GetScreenHeight() / 2.0f + 140.0f;
 			credits.size.x = 220.0f;
 			credits.size.y = 60.0f;
 			quit.position.x = GetScreenWidth() / 2.0f - 110.0f;
-			quit.position.y = GetScreenHeight() / 2.0f + 140.0f;
+			quit.position.y = GetScreenHeight() / 2.0f + 210.0f;
 			quit.size.x = 220.0f;
 			quit.size.y = 60.0f;
 		}
@@ -57,11 +67,20 @@ namespace game {
 					}
 				}
 			}
+			if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+				if (help.position.x <= mousePosition.x && mousePosition.x <= help.position.x + help.size.x) {
+					if (help.position.y <= mousePosition.y && mousePosition.y <= help.position.y + help.size.y) {
+						goToHelp();
+					}
+				}
+			}
 		}
 		void drawMenu() {
-			DrawText("ASTEROIDS", GetScreenWidth() / 2 - 180, GetScreenHeight() / 2 - 90, 60, WHITE);
+			DrawText("Invaders from Space", GetScreenWidth() / 2 - 320, GetScreenHeight() / 2 - 90, 60, WHITE);
 			DrawRectangle(start.position.x, start.position.y, start.size.x, start.size.y, WHITE);
 			DrawText("START", start.position.x + 32, start.position.y + 10, 45, BLACK);
+			DrawRectangle(help.position.x, help.position.y, help.size.x, help.size.y, WHITE);
+			DrawText("HELP", help.position.x + 49, help.position.y + 10, 45, BLACK);
 			DrawRectangle(credits.position.x, credits.position.y, credits.size.x, credits.size.y, WHITE);
 			DrawText("CREDITS", credits.position.x + 10, credits.position.y + 10, 45, BLACK);
 			DrawRectangle(quit.position.x, quit.position.y, quit.size.x, quit.size.y, WHITE);

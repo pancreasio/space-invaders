@@ -17,6 +17,9 @@ namespace game {
 		case gameplaystate:
 			gameplayspace::drawGameplay();
 			break;
+		case helpstate:
+			helpspace::drawHelp();
+			break;
 		case creditsstate:
 			creditsspace::drawCredits();
 			break;
