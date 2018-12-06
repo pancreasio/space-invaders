@@ -2,8 +2,8 @@
 namespace game {
 	gamestate currentstate;
 	bool gameSwitch;
-	const unsigned int screenheight = 600;
-	const unsigned int screenwidth = 800;
+	const unsigned int screenheight = 720;
+	const unsigned int screenwidth = 1280;
 	const unsigned int version = 0, subVersion = 0;
 	Vector2 mousePosition;
 	void generalDraw() {

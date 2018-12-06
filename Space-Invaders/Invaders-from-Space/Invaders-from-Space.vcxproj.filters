@@ -7,12 +7,6 @@
     <Filter Include="Screen Headers">
       <UniqueIdentifier>{d2487d3a-5d2d-40a4-8925-5ac263ce6a6b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game Objects">
-      <UniqueIdentifier>{cb04ea51-8129-467f-bb44-bd2e1504d325}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game Object Headers">
-      <UniqueIdentifier>{8de02336-ee2c-493d-a25d-6434033f84c3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="source">
       <UniqueIdentifier>{5d45a5d9-bcc9-424d-8d2c-c4864b04bdcc}</UniqueIdentifier>
     </Filter>
