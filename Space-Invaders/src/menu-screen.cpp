@@ -77,14 +77,14 @@ namespace game {
 		}
 		void drawMenu() {
 			DrawText("Invaders from Space", GetScreenWidth() / 2 - 320, GetScreenHeight() / 2 - 90, 60, WHITE);
-			DrawRectangle(start.position.x, start.position.y, start.size.x, start.size.y, WHITE);
-			DrawText("START", start.position.x + 32, start.position.y + 10, 45, BLACK);
-			DrawRectangle(help.position.x, help.position.y, help.size.x, help.size.y, WHITE);
-			DrawText("HELP", help.position.x + 49, help.position.y + 10, 45, BLACK);
-			DrawRectangle(credits.position.x, credits.position.y, credits.size.x, credits.size.y, WHITE);
-			DrawText("CREDITS", credits.position.x + 10, credits.position.y + 10, 45, BLACK);
-			DrawRectangle(quit.position.x, quit.position.y, quit.size.x, quit.size.y, WHITE);
-			DrawText("QUIT", quit.position.x + 55, quit.position.y + 10, 45, BLACK);
+			DrawRectangle(static_cast<int>(start.position.x), static_cast<int>(start.position.y), static_cast<int>(start.size.x), static_cast<int>(start.size.y), WHITE);
+			DrawText("START", static_cast<int>(start.position.x) + 32, static_cast<int>(start.position.y) + 10, 45, BLACK);
+			DrawRectangle(static_cast<int>(help.position.x), static_cast<int>(help.position.y), static_cast<int>(help.size.x), static_cast<int>(help.size.y), WHITE);
+			DrawText("HELP", static_cast<int>(help.position.x) + 49, static_cast<int>(help.position.y) + 10, 45, BLACK);
+			DrawRectangle(static_cast<int>(credits.position.x), static_cast<int>(credits.position.y), static_cast<int>(credits.size.x), static_cast<int>(credits.size.y), WHITE);
+			DrawText("CREDITS", static_cast<int>(credits.position.x) + 10, static_cast<int>(credits.position.y) + 10, 45, BLACK);
+			DrawRectangle(static_cast<int>(quit.position.x), static_cast<int>(quit.position.y), static_cast<int>(quit.size.x), static_cast<int>(quit.size.y), WHITE);
+			DrawText("QUIT", static_cast<int>(quit.position.x) + 55, static_cast<int>(quit.position.y) + 10, 45, BLACK);
 			DrawText(FormatText("v%0i.%1i", version, subVersion), GetScreenWidth() - 150, GetScreenHeight() - 20, 20, GRAY);
 		}
 	

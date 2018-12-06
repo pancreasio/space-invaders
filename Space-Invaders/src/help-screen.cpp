@@ -30,8 +30,8 @@ namespace game {
 		}
 
 		void drawHelp() {
-			DrawRectangle(back.position.x, back.position.y, back.size.x, back.size.y, WHITE);
-			DrawText("BACK", back.position.x + 32, back.position.y + 10, 45, BLACK);
+			DrawRectangle(static_cast<int>(back.position.x), static_cast<int>(back.position.y), static_cast<int>(back.size.x), static_cast<int>(back.size.y), WHITE);
+			DrawText("BACK", static_cast<int>(back.position.x) + 32, static_cast<int>(back.position.y) + 10, 45, BLACK);
 		}
 	}
 }

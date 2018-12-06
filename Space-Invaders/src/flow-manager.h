@@ -13,14 +13,14 @@
 
 namespace game {
 	enum gamestate {
-		menustate, gameplaystate, gameoverstate, creditsstate,helpstate,
+		menustate, gameplaystate, gameoverstate, creditsstate, helpstate,
 	};
 	struct button {
 		Vector2 position;
 		Vector2 size;
 		std::string text;
 	};
-	extern bool gameSwitch;
+	extern bool gameSwitch, mute;
 	extern gamestate currentstate;
 	extern const unsigned int version, subVersion;
 	extern Vector2 mousePosition;
