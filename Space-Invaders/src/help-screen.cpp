@@ -48,6 +48,7 @@ namespace game {
 			DrawText("dodge everything!", 190, 80, 25, WHITE);
 			DrawText("one hit means death", 190, 110, 25, WHITE);
 			DrawText("move with the arrow keys, fire with spacebar",70,258,25, WHITE);
+			DrawText("pause with enter", 70, 288, 25, WHITE);
 			DrawText("get behind the armored turrets!", 70, 460, 25, WHITE);
 			DrawText("be careful, they take damage", 70, 495, 25, WHITE);
 			DrawText("destroy all the enemies!", 820, 50, 25, WHITE);
