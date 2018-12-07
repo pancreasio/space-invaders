@@ -11,6 +11,7 @@ namespace game {
 		const unsigned int maxFortresses = 4;
 
 		Music bgm;
+		Sound shotSound;
 		button exitButton;
 		Player player1;
 		Shot player1ShotArray[maxFriendlyShots], auxBullet;
@@ -31,6 +32,7 @@ namespace game {
 		double sniperShotCooldown = 3.0;
 
 		void returnToMenu() {
+			UnloadSound(shotSound);
 			UnloadMusicStream(bgm);
 			UnloadTexture(playerTexture);
 			UnloadTexture(swarmTexture);
@@ -46,6 +48,7 @@ namespace game {
 		}
 
 		void gameOver() {
+			UnloadSound(shotSound);
 			UnloadMusicStream(bgm);
 			UnloadTexture(playerTexture);
 			UnloadTexture(swarmTexture);
@@ -72,6 +75,7 @@ namespace game {
 			explosionTexture = LoadTexture("res/assets/explosionsheet.png");
 			background = LoadTexture("res/assets/background.png");
 
+			shotSound = LoadSound("res/assets/shot.wav");
 			bgm = LoadMusicStream("res/assets/bgm.ogg");
 			StopMusicStream(bgm);
 			PlayMusicStream(bgm);
@@ -221,6 +225,9 @@ namespace game {
 					fireSwitch = false;
 					for (bulletCounter = 0; bulletCounter < maxFriendlyShots; bulletCounter++) {
 						if (!player1ShotArray[bulletCounter].active) {
+							if (!mute) {
+								PlaySound(shotSound);
+							}
 							player1ShotArray[bulletCounter].position.x = player1.position.x + static_cast<float>(playerTexture.width) / 2.0f - 27.0f;
 							player1ShotArray[bulletCounter].position.y = player1.position.y + 8.0f;
 							player1ShotArray[bulletCounter].active = true;
@@ -239,6 +246,9 @@ namespace game {
 								{
 									auxBullet = player1ShotArray[i + 1];
 									player1ShotArray[i + 1] = player1ShotArray[i];
+								}
+								if (!mute) {
+									PlaySound(shotSound);
 								}
 								player1ShotArray[0].position = player1.position;
 								player1ShotArray[0].active = true;

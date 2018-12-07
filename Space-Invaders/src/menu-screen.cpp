@@ -2,6 +2,7 @@
 
 namespace game {
 	namespace menuspace {
+		button sound;
 		button start;
 		button help;
 		button quit;
