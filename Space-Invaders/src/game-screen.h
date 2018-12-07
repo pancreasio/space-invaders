@@ -53,6 +53,7 @@ namespace game {
 		struct Shot {
 			bool active;
 			bool friendly;
+			double birthDate;
 			Rectangle sourceRec;
 			Rectangle destRec;
 			Rectangle AABB;
