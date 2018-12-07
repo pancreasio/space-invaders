@@ -385,6 +385,7 @@ namespace game {
 								swarmRow0Array[i2].active = false;
 								player1ShotArray[i].active = false;
 								swarmIn0--;
+								enemies--;
 							}
 						}
 					//row 1
@@ -393,6 +394,7 @@ namespace game {
 								swarmRow1Array[i2].active = false;
 								player1ShotArray[i].active = false;
 								swarmIn1--;
+								enemies--;
 							}
 						}
 					//row 2
@@ -401,6 +403,7 @@ namespace game {
 								swarmRow2Array[i2].active = false;
 								player1ShotArray[i].active = false;
 								swarmIn2--;
+								enemies--;
 							}
 						}
 					}
@@ -416,6 +419,7 @@ namespace game {
 								sniperArray[i2].active = false;
 								player1ShotArray[i].active = false;
 								snipers--;
+								enemies--;
 							}
 						}
 					}
@@ -455,6 +459,7 @@ namespace game {
 								swarmRow0Array[i2].active = false;
 								fortressArray[i].HP -= 2;
 								swarmIn0--;
+								enemies--;
 							}
 						}
 						//row 1
@@ -463,6 +468,7 @@ namespace game {
 								swarmRow1Array[i2].active = false;
 								fortressArray[i].HP -= 2;
 								swarmIn1--;
+								enemies--;
 							}
 						}
 						//row 2
@@ -471,6 +477,7 @@ namespace game {
 								swarmRow2Array[i2].active = false;
 								fortressArray[i].HP -= 2;
 								swarmIn2--;
+								enemies--;
 							}
 						}
 					}
@@ -539,8 +546,8 @@ namespace game {
 			}
 
 			//win logic
-			if (snipers <= 0) {
-				returnToMenu();
+			if (enemies<= 0) {
+				gameOver();
 			}
 			//lose logic
 
