@@ -45,9 +45,10 @@ namespace game {
 			currentFrame = 0;
 
 			//bullet settings
+			bulletAABB = {0.0f,0.0f,15.0f,32.0f};
 			fireSwitch = false;
 			bulletCounter = 0;
-			bulletSpeed = 800.0f;
+			bulletSpeed = 700.0f;
 
 		}
 
@@ -73,11 +74,13 @@ namespace game {
 				fireSwitch = false;
 				for (bulletCounter = 0; bulletCounter < maxFriendlyShots; bulletCounter++) {
 					if (!player1ShotArray[bulletCounter].active) {
-						player1ShotArray[bulletCounter].position.x = player1.position.x + static_cast<float>(playerTexture.width) /2.0f - 20.0f;
-						player1ShotArray[bulletCounter].position.y = player1.position.y - 10;
+						player1ShotArray[bulletCounter].position.x = player1.position.x + static_cast<float>(playerTexture.width) /2.0f - 27.0f;
+						player1ShotArray[bulletCounter].position.y = player1.position.y +8.0f;
 						player1ShotArray[bulletCounter].active = true;
 						player1ShotArray[bulletCounter].birthDate = GetTime();
 						player1ShotArray[bulletCounter].AABB = bulletAABB;
+						player1ShotArray[bulletCounter].AABB.x = player1ShotArray[bulletCounter].position.x;
+						player1ShotArray[bulletCounter].AABB.y = player1ShotArray[bulletCounter].position.y;
 						bulletCounter = maxFriendlyShots;
 						fireSwitch = true;
 					}
@@ -102,6 +105,7 @@ namespace game {
 			for (int i = 0; i < maxFriendlyShots; i++) {
 				if (player1ShotArray[i].active) {
 					player1ShotArray[i].position.y -= bulletSpeed * GetFrameTime();
+					player1ShotArray[i].AABB.y = player1ShotArray[i].position.y;
 					if (GetTime() - player1ShotArray[i].birthDate > timeToKill) {
 						player1ShotArray[i].active = false;
 					}
@@ -136,7 +140,7 @@ namespace game {
 			//bullets
 			for (int i = 0; i < maxFriendlyShots; i++) {
 				if (player1ShotArray[i].active) {
-					DrawCircle(player1ShotArray[i].position.x, player1ShotArray[i].position.y, 6.0f, PURPLE);
+					DrawTextureEx(shotTexture, player1ShotArray[i].position, 0.0f, 2.0f, WHITE);					
 				}
 			}
 		}
