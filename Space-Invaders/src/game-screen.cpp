@@ -86,7 +86,7 @@ namespace game {
 			exitButton.size.x = 240;
 			exitButton.size.y = 60.0;
 			sound.position.x = GetScreenWidth() / 2.0f + 150.0f;
-			sound.position.y = GetScreenHeight() / 2.0 + 50.0f;
+			sound.position.y = GetScreenHeight() / 2.0f + 50.0f;
 			sound.size.x = 220.0f;
 			sound.size.y = 60.0f;
 

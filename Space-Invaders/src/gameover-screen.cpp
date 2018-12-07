@@ -29,10 +29,10 @@ namespace game {
 
 		void updateGameOver() {
 			if (gameplayspace::won) {
-				DrawText("You Won!", GetScreenWidth() / 2 - 110.0, GetScreenHeight() / 2 -100 , 50, WHITE);
+				DrawText("You Won!", GetScreenWidth() / 2 - 110, GetScreenHeight() / 2 -100 , 50, WHITE);
 			}
 			else {
-				DrawText("You Lost!", GetScreenWidth() / 2 - 120.0, GetScreenHeight() / 2 -100, 50, WHITE);
+				DrawText("You Lost!", GetScreenWidth() / 2 - 120, GetScreenHeight() / 2 -100, 50, WHITE);
 			}
 			mousePosition = GetMousePosition();
 			if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
