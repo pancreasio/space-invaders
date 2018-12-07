@@ -28,6 +28,10 @@ namespace game {
 			start.position.y = GetScreenHeight() / 2.0f;
 			start.size.x = 220.0f;
 			start.size.y = 60.0f;
+			sound.position.x = GetScreenWidth() / 2.0f + 150.0f;
+			sound.position.y = GetScreenHeight() / 2.0f + 50.0f;
+			sound.size.x = 220.0f;
+			sound.size.y = 60.0f;
 			help.position.x = GetScreenWidth() / 2.0f - 110.0f;
 			help.position.y = GetScreenHeight() / 2.0f + 70.0f;
 			help.size.x = 220.0f;
@@ -62,6 +66,13 @@ namespace game {
 				}
 			}
 			if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+				if (sound.position.x <= mousePosition.x && mousePosition.x <= sound.position.x + sound.size.x) {
+					if (sound.position.y <= mousePosition.y && mousePosition.y <= sound.position.y + sound.size.y) {
+						mute = !mute;
+					}
+				}
+			}
+			if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
 				if (quit.position.x <= mousePosition.x && mousePosition.x <= quit.position.x + quit.size.x) {
 					if (quit.position.y <= mousePosition.y && mousePosition.y <= quit.position.y + quit.size.y) {
 						exitGame();
@@ -86,6 +97,13 @@ namespace game {
 			DrawText("CREDITS", static_cast<int>(credits.position.x) + 10, static_cast<int>(credits.position.y) + 10, 45, BLACK);
 			DrawRectangle(static_cast<int>(quit.position.x), static_cast<int>(quit.position.y), static_cast<int>(quit.size.x), static_cast<int>(quit.size.y), WHITE);
 			DrawText("QUIT", static_cast<int>(quit.position.x) + 55, static_cast<int>(quit.position.y) + 10, 45, BLACK);
+			DrawRectangle(static_cast<int>(sound.position.x), static_cast<int>(sound.position.y), static_cast<int>(sound.size.x), static_cast<int>(sound.size.y), WHITE);
+			if (!mute) {
+				DrawText("Sound On", static_cast<int>(sound.position.x) + 10, static_cast<int>(sound.position.y) + 10, 40, BLACK);
+			}
+			else{
+				DrawText("Sound Off", static_cast<int>(sound.position.x) + 10, static_cast<int>(sound.position.y) + 10, 40, BLACK);
+			}
 			DrawText(FormatText("v%0i.%1i", version, subVersion), GetScreenWidth() - 150, GetScreenHeight() - 20, 20, GRAY);
 		}
 	

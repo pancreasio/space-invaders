@@ -12,7 +12,7 @@ namespace game {
 
 		Music bgm;
 		Sound shotSound;
-		button exitButton;
+		button exitButton, sound;
 		Player player1;
 		Shot player1ShotArray[maxFriendlyShots], auxBullet;
 		Sniper sniperArray[maxSnipers];
@@ -29,7 +29,7 @@ namespace game {
 		float bulletSpeed, sniperSpeed, sniperAcceleration, enemyShotSpeed, swarmSpeed, swarmAcceleration;
 		const float characterScale = 1.4f, bulletScale = 2.0f;
 		bool fireSwitch, sniperFireSwitch[maxSnipers], sniperDirection, row0Direction, row1Direction, row2Direction, won, isPaused;
-		double sniperShotCooldown = 3.0;
+		double sniperShotCooldown = 1.0, gameTime;
 
 		void returnToMenu() {
 			UnloadSound(shotSound);
@@ -85,6 +85,10 @@ namespace game {
 			exitButton.position.y = static_cast<float>(GetScreenHeight()) / 2.0f + 60.0f;
 			exitButton.size.x = 240;
 			exitButton.size.y = 60.0;
+			sound.position.x = GetScreenWidth() / 2.0f + 150.0f;
+			sound.position.y = GetScreenHeight() / 2.0 + 50.0f;
+			sound.size.x = 220.0f;
+			sound.size.y = 60.0f;
 
 			//player settings
 			player1.position = { static_cast<float>(GetScreenWidth()) / 2.0f,static_cast<float>(GetScreenHeight()) / 2.0f + 260.0f };
@@ -92,6 +96,7 @@ namespace game {
 			player1.AABB = { 0.0f,0.0f,25.0f,64.0f };
 			won = false;
 			isPaused = false;
+			gameTime = 0.0;
 
 			//player animation settings
 			player1.scale = characterScale;
@@ -152,7 +157,7 @@ namespace game {
 				sniperArray[i].position.y = 30.0f;
 				sniperArray[i].position.x = 50.0f + static_cast<float>(i)* static_cast<float>(GetScreenWidth()) / static_cast<float>(maxSnipers);
 				sniperArray[i].AABB = { sniperArray[i].position.x ,sniperArray[i].position.y, 58.0f,63.0f };
-				sniperArray[i].timeShot = GetTime() + 1.0f * static_cast<float>(i);
+				sniperArray[i].timeShot = GetTime() + 0.5 * static_cast<double>(i);
 				snipers++;
 				enemies++;
 			}
@@ -200,6 +205,7 @@ namespace game {
 				isPaused = !isPaused;
 			}
 			if (!isPaused) {
+				gameTime += GetFrameTime();
 				//sound
 				if (!mute) {
 					UpdateMusicStream(bgm);
@@ -387,7 +393,7 @@ namespace game {
 				//sniper firing logic
 				for (int i = 0; i < maxSnipers; i++) {
 					if (sniperArray[i].active) {
-						if (GetTime() - sniperArray[i].timeShot > sniperShotCooldown) {
+						if (gameTime - sniperArray[i].timeShot > sniperShotCooldown) {
 							sniperArrayShots[i].active = true;
 							sniperArrayShots[i].position.x = sniperArray[i].position.x + 30.0f;
 							sniperArrayShots[i].position.y = sniperArray[i].position.y + 30.0f;
@@ -604,13 +610,22 @@ namespace game {
 				player1.AABB.y = player1.position.y;
 			}
 			else {
-			if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-				if (exitButton.position.x <= mousePosition.x && mousePosition.x <= exitButton.position.x + exitButton.size.x) {
-					if (exitButton.position.y <= mousePosition.y && mousePosition.y <= exitButton.position.y + exitButton.size.y) {
-						returnToMenu();
+				//menu button
+				if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+					if (exitButton.position.x <= mousePosition.x && mousePosition.x <= exitButton.position.x + exitButton.size.x) {
+						if (exitButton.position.y <= mousePosition.y && mousePosition.y <= exitButton.position.y + exitButton.size.y) {
+							returnToMenu();
+						}
 					}
 				}
-			}
+				//sound toggle button
+				if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+					if (sound.position.x <= mousePosition.x && mousePosition.x <= sound.position.x + sound.size.x) {
+						if (sound.position.y <= mousePosition.y && mousePosition.y <= sound.position.y + sound.size.y) {
+							mute = !mute;
+						}
+					}
+				}
 			}
 
 		}
@@ -671,6 +686,15 @@ namespace game {
 				DrawText("PAUSED", GetScreenWidth() / 2 - 120, GetScreenHeight() / 2 - 30, 60, WHITE);
 				DrawRectangle(static_cast<int>(exitButton.position.x), static_cast<int>(exitButton.position.y), static_cast<int>(exitButton.size.x), static_cast<int>(exitButton.size.y), WHITE);
 				DrawText("EXIT", static_cast<int>(exitButton.position.x) + 70, static_cast<int>(exitButton.position.y) + 10, 45, BLACK);
+
+				//sound toggle
+				DrawRectangle(static_cast<int>(sound.position.x), static_cast<int>(sound.position.y), static_cast<int>(sound.size.x), static_cast<int>(sound.size.y), WHITE);
+				if (!mute) {
+					DrawText("Sound On", static_cast<int>(sound.position.x) + 10, static_cast<int>(sound.position.y) + 10, 40, BLACK);
+				}
+				else {
+					DrawText("Sound Off", static_cast<int>(sound.position.x) + 10, static_cast<int>(sound.position.y) + 10, 40, BLACK);
+				}
 			}
 		}
 	}
