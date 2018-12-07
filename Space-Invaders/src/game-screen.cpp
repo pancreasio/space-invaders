@@ -6,7 +6,7 @@ namespace game {
 		const unsigned int maxFriendlyShots = 3;
 		const unsigned int maxSnipers= 6;
 		const unsigned int maxEnemyShots = 6;
-		const unsigned int maxFortresses = 5;
+		const unsigned int maxFortresses = 4;
 
 		Player player1;
 		Shot player1ShotArray[maxFriendlyShots],auxBullet;
@@ -199,6 +199,20 @@ namespace game {
 								sniperArray[i2].active = false;
 								player1ShotArray[i].active = false;
 								snipers--;
+							}
+						}
+					}
+				}
+			}
+
+			//friendly bullets->sniper bullets
+			for (int i = 0; i < maxFriendlyShots; i++) {
+				if (player1ShotArray[i].active) {
+					for (int i2 = 0; i2 < maxEnemyShots; i2++) {
+						if (sniperArrayShots[i2].active) {
+							if (CheckCollisionRecs(player1ShotArray[i].AABB, sniperArrayShots[i2].AABB)) {
+								sniperArrayShots[i2].active = false;
+								player1ShotArray[i].active = false;
 							}
 						}
 					}
