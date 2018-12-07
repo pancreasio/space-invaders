@@ -9,6 +9,7 @@ namespace game {
 		Fortress fortressArray[maxFortresses];
 		Texture playerTexture, swarmTexture, bomberTexture, fortressTexture, shotTexture, explosionTexture, background;
 		unsigned int frameSpeed, currentFrame, frameCounter;
+		unsigned static int leftLimit = 30, rightLimit = 1224;
 
 		void returnToMenu() {
 			menuspace::initMenu();
@@ -28,7 +29,7 @@ namespace game {
 				enemyArray[i].active = true;
 			}
 			//player settings
-			player1.position = { static_cast<float>(GetScreenWidth()),static_cast<float>(GetScreenHeight())+260.0f };
+			player1.position = { static_cast<float>(GetScreenWidth()) / 2.0f,static_cast<float>(GetScreenHeight()) / 2.0f +260.0f };
 			player1.speed = 400.0f;
 
 			//player animation settings
@@ -45,10 +46,14 @@ namespace game {
 
 			//ship movement (and emergency exit button)
 			if (IsKeyDown(KEY_LEFT)) {
-				player1.position.x -= player1.speed * GetFrameTime();
+				if (player1.position.x > leftLimit) {
+					player1.position.x -= player1.speed * GetFrameTime();
+				}
 			}
 			if (IsKeyDown(KEY_RIGHT)) {
-				player1.position.x += player1.speed * GetFrameTime();
+				if (player1.position.x < rightLimit) {
+					player1.position.x += player1.speed * GetFrameTime();
+				}
 			}
 			if (IsKeyPressed(KEY_Q)) {
 				returnToMenu();
@@ -57,7 +62,7 @@ namespace game {
 			//ship animation 
 			frameCounter++;
 
-			if (frameCounter >= (2.0 / frameSpeed)){
+			if (frameCounter >= (2.0 / frameSpeed)){ 
 				frameCounter = 0;
 				currentFrame++;
 
@@ -71,7 +76,7 @@ namespace game {
 
 		void drawGameplay() {
 			DrawTextureEx(background, { 0.0f,0.0f }, 0.0f, 8.0f, WHITE);
-			DrawTexturePro(playerTexture, player1.sourceRec, player1.destRec, { static_cast<float>(GetScreenWidth()) / 2.0f, static_cast<float>(GetScreenHeight()) / 2.0f }, 0.0f, WHITE);
+			DrawTexturePro(playerTexture, player1.sourceRec, player1.destRec, {static_cast<float>(playerTexture.width) / 2.0f, static_cast<float>(playerTexture.height) / 2.0f }, 0.0f, WHITE);
 		}
 	}
 }
