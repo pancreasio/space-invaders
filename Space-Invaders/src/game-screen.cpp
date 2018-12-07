@@ -16,9 +16,9 @@ namespace game {
 		Rectangle bulletAABB;
 		unsigned int frameSpeed, currentFrame, frameCounter, bulletCounter;
 		unsigned const int leftLimit = 30, rightLimit = 1224, timeToKill =1;
-		float bulletSpeed;
+		float bulletSpeed, sniperSpeed, sniperAcceleration;
 		const float characterScale = 1.4f, bulletScale = 2.0f;
-		bool fireSwitch;
+		bool fireSwitch, sniperDirection;
 
 		void returnToMenu() {
 			menuspace::initMenu();
@@ -55,6 +55,9 @@ namespace game {
 			bulletSpeed = 700.0f;
 
 			//enemy settings
+			sniperSpeed = 80.0f;
+			sniperAcceleration = 5.0f;
+			sniperDirection = true;
 
 			//enemy initialization
 			//snipers
@@ -127,6 +130,22 @@ namespace game {
 				}
 			}
 
+			//sniper movement logic
+
+			for (int i = 0; i < maxSnipers; i++)
+			{
+				if (sniperArray[i].active) {
+					if (sniperDirection) {
+						sniperArray[i].position.x += sniperSpeed * GetFrameTime();
+					}
+					else {
+						sniperArray[i].position.x -= sniperSpeed * GetFrameTime();
+					}
+					if (sniperArray[i].position.x <leftLimit || sniperArray[i].position.x > rightLimit) {
+						sniperDirection = !sniperDirection;
+					}
+				}
+			}
 
 			//ship animation 
 			frameCounter++;
