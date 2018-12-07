@@ -16,6 +16,7 @@ namespace game {
 		Rectangle bulletAABB;
 		unsigned int frameSpeed, currentFrame, frameCounter, bulletCounter;
 		unsigned const int leftLimit = 30, rightLimit = 1224, timeToKill =1;
+		int snipers;
 		float bulletSpeed, sniperSpeed, sniperAcceleration;
 		const float characterScale = 1.4f, bulletScale = 2.0f;
 		bool fireSwitch, sniperDirection;
@@ -56,8 +57,9 @@ namespace game {
 
 			//enemy settings
 			sniperSpeed = 80.0f;
-			sniperAcceleration = 5.0f;
+			sniperAcceleration = 0.013f;
 			sniperDirection = true;
+			snipers = 0;
 
 			//enemy initialization
 			//snipers
@@ -66,6 +68,7 @@ namespace game {
 				sniperArray[i].position.y = 30.0f;
 				sniperArray[i].position.x = 50.0f + static_cast<float>(i)* static_cast<float>(GetScreenWidth()) / static_cast<float>(maxSnipers);
 				sniperArray[i].AABB = {sniperArray[i].position.x ,sniperArray[i].position.y, 58.0f,63.0f};
+				snipers++;
 			}
 
 		}
@@ -136,10 +139,10 @@ namespace game {
 			{
 				if (sniperArray[i].active) {
 					if (sniperDirection) {
-						sniperArray[i].position.x += sniperSpeed * GetFrameTime();
+						sniperArray[i].position.x += sniperSpeed * GetFrameTime() + sniperAcceleration * (static_cast<float>(maxSnipers) - static_cast<float>(snipers));
 					}
 					else {
-						sniperArray[i].position.x -= sniperSpeed * GetFrameTime();
+						sniperArray[i].position.x -= sniperSpeed * GetFrameTime() + sniperAcceleration * (static_cast<float>(maxSnipers) - static_cast<float>(snipers));
 					}
 					if (sniperArray[i].position.x <leftLimit || sniperArray[i].position.x > rightLimit) {
 						sniperDirection = !sniperDirection;
@@ -160,12 +163,18 @@ namespace game {
 							if (CheckCollisionRecs(player1ShotArray[i].AABB, sniperArray[i2].AABB)) {
 								sniperArray[i2].active = false;
 								player1ShotArray[i].active = false;
+								snipers--;
 							}
 						}
 					}
 				}
 			}
 
+			//win logic
+			if (snipers <= 0) {
+				returnToMenu();
+			}
+			//lose logic
 
 			//ship animation 
 			frameCounter++;
