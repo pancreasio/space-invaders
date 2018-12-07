@@ -144,8 +144,28 @@ namespace game {
 					if (sniperArray[i].position.x <leftLimit || sniperArray[i].position.x > rightLimit) {
 						sniperDirection = !sniperDirection;
 					}
+					sniperArray[i].AABB.x = sniperArray[i].position.x;
+					sniperArray[i].AABB.y = sniperArray[i].position.y;
+				}
+				
+			}
+
+			//collisions
+			//friendly bullet->snipers
+
+			for (int i = 0; i < maxFriendlyShots; i++){
+				if (player1ShotArray[i].active) {
+					for (int i2 = 0; i2 < maxSnipers; i2++){
+						if (sniperArray[i2].active) {
+							if (CheckCollisionRecs(player1ShotArray[i].AABB, sniperArray[i2].AABB)) {
+								sniperArray[i2].active = false;
+								player1ShotArray[i].active = false;
+							}
+						}
+					}
 				}
 			}
+
 
 			//ship animation 
 			frameCounter++;
