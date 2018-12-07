@@ -4,7 +4,7 @@ namespace game {
 	bool gameSwitch, mute;
 	const unsigned int screenheight = 720;
 	const unsigned int screenwidth = 1280;
-	const unsigned int version = 0, subVersion = 3;
+	const unsigned int version = 1, subVersion = 0;
 	Vector2 mousePosition;
 	void generalDraw() {
 		BeginDrawing();
