@@ -11,13 +11,8 @@ namespace game {
 		void updateGameplay();
 		void drawGameplay();
 
-		const unsigned int maxFriendlyShots = 5;
-		const unsigned int maxEnemies = 55;
-		const unsigned int maxEnemyShots = 10;
-		const unsigned int maxFortresses = 5;
-
 		enum enemyType {
-			swarm, bomber,
+			swarm, bomber, sniper,
 		};
 
 		struct Fortress {
@@ -40,11 +35,26 @@ namespace game {
 			double chargeTimeLimit;
 		};
 
-		struct Enemy {
+		struct Swarm {
 			bool active;
 			enemyType type;
-			Rectangle sourceRec;
-			Rectangle destRec;
+			Rectangle AABB;
+			Vector2 position;
+			Vector2 speed;
+		};
+
+		struct Bomber {
+			bool active;
+			enemyType type;
+			Rectangle AABB;
+			Vector2 position;
+			Vector2 speed;
+		};
+
+		struct Sniper {
+			bool active;
+			double shotCooldown;
+			enemyType type;
 			Rectangle AABB;
 			Vector2 position;
 			Vector2 speed;
@@ -52,10 +62,15 @@ namespace game {
 
 		struct Shot {
 			bool active;
-			bool friendly;
 			double birthDate;
-			Rectangle sourceRec;
-			Rectangle destRec;
+			Rectangle AABB;
+			Vector2 position;
+			Vector2 speed;
+		};
+
+		struct EnemyShot {
+			bool active;
+			double birthDate;
 			Rectangle AABB;
 			Vector2 position;
 			Vector2 speed;

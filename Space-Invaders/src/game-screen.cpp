@@ -3,15 +3,21 @@
 namespace game {
 	namespace gameplayspace {
 
+		const unsigned int maxFriendlyShots = 3;
+		const unsigned int maxSnipers= 6;
+		const unsigned int maxEnemyShots = 6;
+		const unsigned int maxFortresses = 5;
+
 		Player player1;
 		Shot player1ShotArray[maxFriendlyShots], enemyArrayShotArray[maxEnemyShots], auxBullet;
-		Enemy enemyArray[maxEnemies];
+		Sniper sniperArray[maxSnipers];
 		Fortress fortressArray[maxFortresses];
-		Texture playerTexture, swarmTexture, bomberTexture, fortressTexture, shotTexture, explosionTexture, background;
+		Texture playerTexture, swarmTexture, bomberTexture, fortressTexture, shotTexture, explosionTexture, background, sniperTexture;
 		Rectangle bulletAABB;
 		unsigned int frameSpeed, currentFrame, frameCounter, bulletCounter;
 		unsigned const int leftLimit = 30, rightLimit = 1224, timeToKill =1;
 		float bulletSpeed;
+		const float characterScale = 1.4f, bulletScale = 2.0f;
 		bool fireSwitch;
 
 		void returnToMenu() {
@@ -23,21 +29,19 @@ namespace game {
 			playerTexture = LoadTexture("res/assets/shipsheet.png");
 			swarmTexture = LoadTexture("res/assets/swarm.png");
 			bomberTexture = LoadTexture("res/assets/bomber.png");
+			sniperTexture = LoadTexture("res/assets/sniper.png");
 			fortressTexture = LoadTexture("res/assets/fortress.png");
 			shotTexture = LoadTexture("res/assets/shot.png");
 			explosionTexture = LoadTexture("res/assets/explosionsheet.png");
 			background = LoadTexture("res/assets/background.png");
-			for (int i = 0; i < maxEnemies; i++) {
-				enemyArray[i].type = swarm;
-				enemyArray[i].active = true;
-			}
+			
 			//player settings
 			player1.position = { static_cast<float>(GetScreenWidth()) / 2.0f,static_cast<float>(GetScreenHeight()) / 2.0f +260.0f };
 			player1.speed = 400.0f;
 			player1.AABB = {0.0f,0.0f,25.0f,64.0f};
 
 			//player animation settings
-			player1.scale = 1.4f;
+			player1.scale = characterScale;
 			player1.sourceRec = { 0.0f, 0.0f, static_cast<float>(playerTexture.width) / 2.0f ,static_cast<float>(playerTexture.height) };
 			player1.destRec = { player1.position.x,player1.position.y, static_cast<float>(playerTexture.width) * player1.scale, static_cast<float>(playerTexture.height) * 2.0f * player1.scale };
 			frameSpeed = 1;
@@ -49,6 +53,17 @@ namespace game {
 			fireSwitch = false;
 			bulletCounter = 0;
 			bulletSpeed = 700.0f;
+
+			//enemy settings
+
+			//enemy initialization
+			//snipers
+			for (int i = 0; i < maxSnipers; i++) {
+				sniperArray[i].active = true;
+				sniperArray[i].position.y = 30.0f;
+				sniperArray[i].position.x = 50.0f + static_cast<float>(i)* static_cast<float>(GetScreenWidth()) / static_cast<float>(maxSnipers);
+				sniperArray[i].AABB = {sniperArray[i].position.x ,sniperArray[i].position.y, 58.0f,63.0f};
+			}
 
 		}
 
@@ -140,9 +155,19 @@ namespace game {
 			//bullets
 			for (int i = 0; i < maxFriendlyShots; i++) {
 				if (player1ShotArray[i].active) {
-					DrawTextureEx(shotTexture, player1ShotArray[i].position, 0.0f, 2.0f, WHITE);					
+					DrawTextureEx(shotTexture, player1ShotArray[i].position, 0.0f, bulletScale, WHITE);					
 				}
 			}
+
+			//snipers
+			for (int i = 0; i < maxSnipers; i++){
+				if (sniperArray[i].active) {
+					DrawTextureEx(sniperTexture, sniperArray[i].position, 0.0f,characterScale*1.3f, WHITE);
+				}
+			}
+			//swarm
+
+			//bombers
 		}
 	}
 }
