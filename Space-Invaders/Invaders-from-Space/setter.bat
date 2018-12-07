@@ -1,7 +1,7 @@
 @echo off
 
-set target=%1
-set solution=%2
+set target=%~1
+set solution=%~2
 
 mkdir "%target%res"
 mkdir "%target%res\assets"
