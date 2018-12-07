@@ -1,7 +1,7 @@
 #include "flow-manager.h"
 namespace game {
 	gamestate currentstate;
-	bool gameSwitch;
+	bool gameSwitch, mute;
 	const unsigned int screenheight = 720;
 	const unsigned int screenwidth = 1280;
 	const unsigned int version = 0, subVersion = 3;
@@ -59,6 +59,7 @@ namespace game {
 	}
 
 	void initGame() {
+		mute = false;
 		gameSwitch = true;
 		InitWindow(screenwidth, screenheight, "Invaders from Space");
 		menuspace::initMenu();

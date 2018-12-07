@@ -10,6 +10,7 @@ namespace game {
 		const unsigned int maxEnemyShots = 6;
 		const unsigned int maxFortresses = 4;
 
+		Music bgm;
 		button exitButton;
 		Player player1;
 		Shot player1ShotArray[maxFriendlyShots], auxBullet;
@@ -30,6 +31,7 @@ namespace game {
 		double sniperShotCooldown = 3.0;
 
 		void returnToMenu() {
+			UnloadMusicStream(bgm);
 			UnloadTexture(playerTexture);
 			UnloadTexture(swarmTexture);
 			UnloadTexture(sniperTexture);
@@ -44,6 +46,7 @@ namespace game {
 		}
 
 		void gameOver() {
+			UnloadMusicStream(bgm);
 			UnloadTexture(playerTexture);
 			UnloadTexture(swarmTexture);
 			UnloadTexture(sniperTexture);
@@ -68,6 +71,11 @@ namespace game {
 			enemyShotTexture = LoadTexture("res/assets/enemyshot.png");
 			explosionTexture = LoadTexture("res/assets/explosionsheet.png");
 			background = LoadTexture("res/assets/background.png");
+
+			bgm = LoadMusicStream("res/assets/bgm.ogg");
+			StopMusicStream(bgm);
+			PlayMusicStream(bgm);
+			SetMusicVolume(bgm, 0.7f);
 
 			exitButton.position.x = static_cast<float>(GetScreenWidth()) / 2.0f - 120.0f;
 			exitButton.position.y = static_cast<float>(GetScreenHeight()) / 2.0f + 60.0f;
@@ -188,6 +196,11 @@ namespace game {
 				isPaused = !isPaused;
 			}
 			if (!isPaused) {
+				//sound
+				if (!mute) {
+					UpdateMusicStream(bgm);
+				}
+
 				//ship movement (and emergency exit button)
 				if (IsKeyDown(KEY_LEFT)) {
 					if (player1.position.x > leftLimit) {
@@ -647,7 +660,7 @@ namespace game {
 			if (isPaused) {
 				DrawText("PAUSED", GetScreenWidth() / 2 - 120, GetScreenHeight() / 2 - 30, 60, WHITE);
 				DrawRectangle(static_cast<int>(exitButton.position.x), static_cast<int>(exitButton.position.y), static_cast<int>(exitButton.size.x), static_cast<int>(exitButton.size.y), WHITE);
-				DrawText("EXIT", exitButton.position.x + 70, exitButton.position.y + 10, 45, BLACK);
+				DrawText("EXIT", static_cast<int>(exitButton.position.x) + 70, static_cast<int>(exitButton.position.y) + 10, 45, BLACK);
 			}
 		}
 	}
