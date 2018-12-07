@@ -53,7 +53,7 @@ namespace game {
 
 		struct Sniper {
 			bool active;
-			double shotCooldown;
+			double timeShot;
 			enemyType type;
 			Rectangle AABB;
 			Vector2 position;

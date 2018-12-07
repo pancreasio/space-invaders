@@ -9,17 +9,19 @@ namespace game {
 		const unsigned int maxFortresses = 5;
 
 		Player player1;
-		Shot player1ShotArray[maxFriendlyShots], enemyArrayShotArray[maxEnemyShots], auxBullet;
+		Shot player1ShotArray[maxFriendlyShots],auxBullet;
 		Sniper sniperArray[maxSnipers];
+		EnemyShot sniperArrayShots[maxEnemyShots];
 		Fortress fortressArray[maxFortresses];
-		Texture playerTexture, swarmTexture, bomberTexture, fortressTexture, shotTexture, explosionTexture, background, sniperTexture;
+		Texture playerTexture, swarmTexture, bomberTexture, fortressTexture, shotTexture, explosionTexture, background, sniperTexture, enemyShotTexture;
 		Rectangle bulletAABB;
 		unsigned int frameSpeed, currentFrame, frameCounter, bulletCounter;
 		unsigned const int leftLimit = 30, rightLimit = 1224, timeToKill =1;
 		int snipers;
-		float bulletSpeed, sniperSpeed, sniperAcceleration;
+		float bulletSpeed, sniperSpeed, sniperAcceleration, enemyShotSpeed;
 		const float characterScale = 1.4f, bulletScale = 2.0f;
-		bool fireSwitch, sniperDirection;
+		bool fireSwitch, sniperFireSwitch[maxSnipers], sniperDirection;
+		double sniperShotCooldown = 6.0;
 
 		void returnToMenu() {
 			menuspace::initMenu();
@@ -33,6 +35,7 @@ namespace game {
 			sniperTexture = LoadTexture("res/assets/sniper.png");
 			fortressTexture = LoadTexture("res/assets/fortress.png");
 			shotTexture = LoadTexture("res/assets/shot.png");
+			enemyShotTexture = LoadTexture("res/assets/enemyshot.png");
 			explosionTexture = LoadTexture("res/assets/explosionsheet.png");
 			background = LoadTexture("res/assets/background.png");
 			
@@ -60,6 +63,8 @@ namespace game {
 			sniperAcceleration = 0.013f;
 			sniperDirection = true;
 			snipers = 0;
+			enemyShotSpeed = 400.0f;
+
 
 			//enemy initialization
 			//snipers
@@ -68,6 +73,7 @@ namespace game {
 				sniperArray[i].position.y = 30.0f;
 				sniperArray[i].position.x = 50.0f + static_cast<float>(i)* static_cast<float>(GetScreenWidth()) / static_cast<float>(maxSnipers);
 				sniperArray[i].AABB = {sniperArray[i].position.x ,sniperArray[i].position.y, 58.0f,63.0f};
+				sniperArray[i].timeShot = GetTime() + 1.0f * static_cast<float>(i);
 				snipers++;
 			}
 
@@ -153,6 +159,27 @@ namespace game {
 				
 			}
 
+			//sniper firing logic
+			for (int i = 0; i < maxSnipers; i++){
+				if (sniperArray[i].active) {
+					if (GetTime() - sniperArray[i].timeShot > sniperShotCooldown) {
+						sniperArrayShots[i].active = true;
+						sniperArrayShots[i].position.x = sniperArray[i].position.x + 30.0f;
+						sniperArrayShots[i].position.y = sniperArray[i].position.y + 30.0f;
+						sniperArray[i].timeShot = GetTime();
+					}
+				}
+			}
+			
+			for (int i = 0; i < maxEnemyShots; i++){
+				if (sniperArrayShots[i].active) {
+					sniperArrayShots[i].position.y += enemyShotSpeed * GetFrameTime();
+					if (sniperArrayShots[i].position.y > static_cast<float>(GetScreenHeight())) {
+						sniperArrayShots[i].active = false;
+					}
+				}
+			}
+
 			//collisions
 			//friendly bullet->snipers
 
@@ -213,6 +240,14 @@ namespace game {
 					DrawTextureEx(sniperTexture, sniperArray[i].position, 0.0f,characterScale*1.3f, WHITE);
 				}
 			}
+			for (int i = 0; i < maxSnipers; i++) {
+				if (sniperArrayShots[i].active) {
+					DrawTextureEx(enemyShotTexture, sniperArrayShots[i].position, 0.0f, bulletScale, WHITE);
+				}
+			}
+
+			//sniper bullets
+
 			//swarm
 
 			//bombers
