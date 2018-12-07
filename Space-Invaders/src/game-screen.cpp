@@ -121,7 +121,7 @@ namespace game {
 				//row 0
 				swarmRow0Array[i].active = true;
 				swarmRow0Array[i].position.y = 110.0f;
-				swarmRow0Array[i].position.x = 50.0f + static_cast<float>(i)* static_cast<float>(GetScreenWidth()) / static_cast<float>(maxSwarmPerRow);
+				swarmRow0Array[i].position.x = 100.0f + static_cast<float>(i)* static_cast<float>(GetScreenWidth()) / static_cast<float>(maxSwarmPerRow);
 				swarmRow0Array[i].AABB = swarmAABB;
 				swarmRow0Array[i].AABB.x = swarmRow0Array[i].position.x;
 				swarmRow0Array[i].AABB.y = swarmRow0Array[i].position.y;
@@ -130,7 +130,7 @@ namespace game {
 				//row 1
 				swarmRow1Array[i].active = true;
 				swarmRow1Array[i].position.y = 170.0f;
-				swarmRow1Array[i].position.x = 50.0f + static_cast<float>(i)* static_cast<float>(GetScreenWidth()) / static_cast<float>(maxSwarmPerRow);
+				swarmRow1Array[i].position.x = 100.0f + static_cast<float>(i)* static_cast<float>(GetScreenWidth()) / static_cast<float>(maxSwarmPerRow);
 				swarmRow1Array[i].AABB = swarmAABB;
 				swarmRow1Array[i].AABB.x = swarmRow1Array[i].position.x;
 				swarmRow1Array[i].AABB.y = swarmRow1Array[i].position.y;
@@ -139,7 +139,7 @@ namespace game {
 				//row 2
 				swarmRow2Array[i].active = true;
 				swarmRow2Array[i].position.y = 230.0f;
-				swarmRow2Array[i].position.x = 50.0f + static_cast<float>(i)* static_cast<float>(GetScreenWidth()) / static_cast<float>(maxSwarmPerRow);
+				swarmRow2Array[i].position.x = 100.0f + static_cast<float>(i)* static_cast<float>(GetScreenWidth()) / static_cast<float>(maxSwarmPerRow);
 				swarmRow2Array[i].AABB = swarmAABB;
 				swarmRow2Array[i].AABB.x = swarmRow2Array[i].position.x;
 				swarmRow2Array[i].AABB.y = swarmRow2Array[i].position.y;
@@ -224,9 +224,19 @@ namespace game {
 					}
 					if (swarmRow0Array[i].position.x < leftLimit) {
 						row0Direction = true;
+						for (int i = 0; i < maxSwarmPerRow; i++){
+							if (swarmRow0Array[i].active) {
+								swarmRow0Array[i].position.y += 40.0f;
+							}
+						}
 					}
 					if (swarmRow0Array[i].position.x > rightLimit) {
 						row0Direction = false;
+						for (int i = 0; i < maxSwarmPerRow; i++) {
+							if (swarmRow0Array[i].active) {
+								swarmRow0Array[i].position.y += 40.0f;
+							}
+						}
 					}
 					swarmRow0Array[i].AABB.x = swarmRow0Array[i].position.x;
 					swarmRow0Array[i].AABB.y = swarmRow0Array[i].position.y;
@@ -242,9 +252,19 @@ namespace game {
 					}
 					if (swarmRow1Array[i].position.x < leftLimit) {
 						row1Direction = true;
+						for (int i = 0; i < maxSwarmPerRow; i++) {
+							if (swarmRow1Array[i].active) {
+								swarmRow1Array[i].position.y += 40.0f;
+							}
+						}
 					}
 					if (swarmRow1Array[i].position.x > rightLimit) {
 						row1Direction = false;
+						for (int i = 0; i < maxSwarmPerRow; i++) {
+							if (swarmRow1Array[i].active) {
+								swarmRow1Array[i].position.y += 40.0f;
+							}
+						}
 					}
 					swarmRow1Array[i].AABB.x = swarmRow1Array[i].position.x;
 					swarmRow1Array[i].AABB.y = swarmRow1Array[i].position.y;
@@ -260,9 +280,19 @@ namespace game {
 					}
 					if (swarmRow2Array[i].position.x < leftLimit) {
 						row2Direction = true;
+						for (int i = 0; i < maxSwarmPerRow; i++) {
+							if (swarmRow2Array[i].active) {
+								swarmRow2Array[i].position.y += 40.0f;
+							}
+						}
 					}
 					if (swarmRow2Array[i].position.x > rightLimit) {
 						row2Direction = false;
+						for (int i = 0; i < maxSwarmPerRow; i++) {
+							if (swarmRow2Array[i].active) {
+								swarmRow2Array[i].position.y += 40.0f;
+							}
+						}
 					}
 					swarmRow2Array[i].AABB.x = swarmRow2Array[i].position.x;
 					swarmRow2Array[i].AABB.y = swarmRow2Array[i].position.y;
@@ -320,6 +350,42 @@ namespace game {
 			}
 
 			//collisions
+			//friendly bullets->swarm
+			for (int i = 0; i < maxFriendlyShots; i++) {
+				if (player1ShotArray[i].active) {
+					//row 0
+					for (int i2 = 0; i2 < maxSwarmPerRow; i2++) {
+						if (swarmRow0Array[i2].active) {
+							if (CheckCollisionRecs(player1ShotArray[i].AABB, swarmRow0Array[i2].AABB)) {
+								swarmRow0Array[i2].active = false;
+								player1ShotArray[i].active = false;
+								swarmIn0--;
+							}
+						}
+					}
+					//row 1
+					for (int i2 = 0; i2 < maxSwarmPerRow; i2++) {
+						if (swarmRow1Array[i2].active) {
+							if (CheckCollisionRecs(player1ShotArray[i].AABB, swarmRow1Array[i2].AABB)) {
+								swarmRow1Array[i2].active = false;
+								player1ShotArray[i].active = false;
+								swarmIn1--;
+							}
+						}
+					}
+					//row 2
+					for (int i2 = 0; i2 < maxSwarmPerRow; i2++) {
+						if (swarmRow2Array[i2].active) {
+							if (CheckCollisionRecs(player1ShotArray[i].AABB, swarmRow2Array[i2].AABB)) {
+								swarmRow2Array[i2].active = false;
+								player1ShotArray[i].active = false;
+								swarmIn2--;
+							}
+						}
+					}
+				}
+			}
+
 			//friendly bullet->snipers
 			for (int i = 0; i < maxFriendlyShots; i++) {
 				if (player1ShotArray[i].active) {
