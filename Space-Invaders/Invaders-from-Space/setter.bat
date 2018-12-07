@@ -4,4 +4,5 @@ set target=%1
 set solution=%2
 
 mkdir "%target%res"
-xcopy "%solution%res\assets" "%target%res" /E /Y /S
+mkdir "%target%res\assets"
+xcopy "%solution%res\assets" "%target%res\assets" /E /Y /S

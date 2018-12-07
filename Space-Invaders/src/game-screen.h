@@ -16,14 +16,15 @@ namespace game {
 		const unsigned int maxEnemyShots = 10;
 		const unsigned int maxFortresses = 5;
 
-		
+		enum enemyType {
+			swarm, bomber,
+		};
 
 		struct Fortress {
 			Rectangle sourceRec;
 			Rectangle destRec;
 			Rectangle AABB;
 			Vector2 position;
-			Texture texture;
 		};
 
 		struct Player {
@@ -31,8 +32,8 @@ namespace game {
 			Rectangle destRec;
 			Rectangle AABB;
 			Vector2 position;
-			Vector2 speed;
-			Texture texture;
+			float speed;
+			float scale;
 			bool charged;
 			bool chargeCount;
 			double startCharge;
@@ -41,15 +42,12 @@ namespace game {
 
 		struct Enemy {
 			bool active;
-			enum type{
-				swarm, bomber,
-			};
+			enemyType type;
 			Rectangle sourceRec;
 			Rectangle destRec;
 			Rectangle AABB;
 			Vector2 position;
 			Vector2 speed;
-			Texture texture;
 		};
 
 		struct Shot {
@@ -60,7 +58,6 @@ namespace game {
 			Rectangle AABB;
 			Vector2 position;
 			Vector2 speed;
-			Texture texture;
 		};
 	}
 }
