@@ -259,7 +259,18 @@ namespace game {
 			}
 
 			//sniper bullets->fortresses
-
+			for (int i = 0; i < maxEnemyShots; i++){
+				if (sniperArrayShots[i].active) {
+					for (int i2 = 0; i2 < maxFortresses; i2++){
+						if (fortressArray[i2].active) {
+							if (CheckCollisionRecs(sniperArrayShots[i].AABB, fortressArray[i2].AABB)) {
+								sniperArrayShots[i].active = false;
+								fortressArray[i2].HP--;
+							}
+						}
+					}
+				}
+			}
 
 
 			//fortress health logic
