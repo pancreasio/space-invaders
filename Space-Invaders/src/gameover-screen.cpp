@@ -28,6 +28,12 @@ namespace game {
 		}
 
 		void updateGameOver() {
+			if (gameplayspace::won) {
+				DrawText("You Won!", GetScreenWidth() / 2 - 110.0, GetScreenHeight() / 2 -100 , 50, WHITE);
+			}
+			else {
+				DrawText("You Lost!", GetScreenWidth() / 2 - 120.0, GetScreenHeight() / 2 -100, 50, WHITE);
+			}
 			mousePosition = GetMousePosition();
 			if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
 				if (retry.position.x <= mousePosition.x && mousePosition.x <= retry.position.x + retry.size.x) {

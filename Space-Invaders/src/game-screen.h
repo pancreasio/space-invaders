@@ -11,6 +11,8 @@ namespace game {
 		void updateGameplay();
 		void drawGameplay();
 
+		extern bool won;
+
 		struct Fortress {
 			bool active;
 			unsigned int HP;

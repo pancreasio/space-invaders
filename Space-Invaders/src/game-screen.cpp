@@ -25,7 +25,7 @@ namespace game {
 		int snipers, swarmIn0, swarmIn1, swarmIn2, enemies;
 		float bulletSpeed, sniperSpeed, sniperAcceleration, enemyShotSpeed, swarmSpeed, swarmAcceleration;
 		const float characterScale = 1.4f, bulletScale = 2.0f;
-		bool fireSwitch, sniperFireSwitch[maxSnipers], sniperDirection, row0Direction, row1Direction, row2Direction;
+		bool fireSwitch, sniperFireSwitch[maxSnipers], sniperDirection, row0Direction, row1Direction, row2Direction, won;
 		double sniperShotCooldown = 3.0;
 
 		void returnToMenu() {
@@ -72,6 +72,7 @@ namespace game {
 			player1.position = { static_cast<float>(GetScreenWidth()) / 2.0f,static_cast<float>(GetScreenHeight()) / 2.0f + 260.0f };
 			player1.speed = 400.0f;
 			player1.AABB = { 0.0f,0.0f,25.0f,64.0f };
+			won = false;
 
 			//player animation settings
 			player1.scale = characterScale;
@@ -91,6 +92,7 @@ namespace game {
 			fortressAABB = { 0.0f,0.0f,92.0f,40.0f };
 
 			//enemy settings
+			enemies = 0;
 			//snipers
 			sniperSpeed = 80.0f;
 			sniperAcceleration = 0.013f;
@@ -547,9 +549,9 @@ namespace game {
 
 			//win logic
 			if (enemies<= 0) {
+				won = true;
 				gameOver();
 			}
-			//lose logic
 
 			//ship animation 
 			frameCounter++;
