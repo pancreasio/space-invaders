@@ -42,6 +42,21 @@ namespace game {
 			currentstate = menustate;
 		}
 
+		void gameOver() {
+			UnloadTexture(playerTexture);
+			UnloadTexture(swarmTexture);
+			UnloadTexture(sniperTexture);
+			UnloadTexture(bomberTexture);
+			UnloadTexture(fortressTexture);
+			UnloadTexture(shotTexture);
+			UnloadTexture(enemyShotTexture);
+			UnloadTexture(explosionTexture);
+			UnloadTexture(background);
+			menuspace::initMenu();
+			gameoverspace::initGameOver();
+			currentstate = gameoverstate;
+		}
+
 		void initGameplay() {
 			playerTexture = LoadTexture("res/assets/shipsheet.png");
 			swarmTexture = LoadTexture("res/assets/swarm.png");
@@ -94,6 +109,10 @@ namespace game {
 			row1Direction = false;
 			row2Direction = true;
 
+			//bullet initialization
+			for (int i = 0; i < maxFriendlyShots; i++){
+				player1ShotArray[i].active = 0;
+			}
 
 			//fortress initialization
 			for (int i = 0; i < maxFortresses; i++) {
@@ -116,6 +135,12 @@ namespace game {
 				snipers++;
 				enemies++;
 			}
+			//sniper bullets
+			for (int i = 0; i < maxEnemyShots; i++) {
+				sniperArrayShots[i].active = 0;
+			}
+
+
 			//swarm
 			for (int i = 0; i < maxSwarmPerRow; i++) {
 				//row 0
@@ -353,8 +378,8 @@ namespace game {
 			//friendly bullets->swarm
 			for (int i = 0; i < maxFriendlyShots; i++) {
 				if (player1ShotArray[i].active) {
-					//row 0
 					for (int i2 = 0; i2 < maxSwarmPerRow; i2++) {
+					//row 0
 						if (swarmRow0Array[i2].active) {
 							if (CheckCollisionRecs(player1ShotArray[i].AABB, swarmRow0Array[i2].AABB)) {
 								swarmRow0Array[i2].active = false;
@@ -362,9 +387,7 @@ namespace game {
 								swarmIn0--;
 							}
 						}
-					}
 					//row 1
-					for (int i2 = 0; i2 < maxSwarmPerRow; i2++) {
 						if (swarmRow1Array[i2].active) {
 							if (CheckCollisionRecs(player1ShotArray[i].AABB, swarmRow1Array[i2].AABB)) {
 								swarmRow1Array[i2].active = false;
@@ -372,9 +395,7 @@ namespace game {
 								swarmIn1--;
 							}
 						}
-					}
 					//row 2
-					for (int i2 = 0; i2 < maxSwarmPerRow; i2++) {
 						if (swarmRow2Array[i2].active) {
 							if (CheckCollisionRecs(player1ShotArray[i].AABB, swarmRow2Array[i2].AABB)) {
 								swarmRow2Array[i2].active = false;
@@ -419,7 +440,61 @@ namespace game {
 			for (int i = 0; i < maxEnemyShots; i++) {
 				if (sniperArrayShots[i].active) {
 					if (CheckCollisionRecs(sniperArrayShots[i].AABB, player1.AABB)) {
-						returnToMenu();
+						gameOver();
+					}
+				}
+			}
+
+			//swarm->fortresses
+			for (int i = 0; i < maxFortresses; i++){
+				if (fortressArray[i].active) {
+					for (int i2 = 0; i2 < maxSwarmPerRow; i2++) {
+						//row 0
+						if (swarmRow0Array[i2].active) {
+							if (CheckCollisionRecs(fortressArray[i].AABB, swarmRow0Array[i2].AABB)) {
+								swarmRow0Array[i2].active = false;
+								fortressArray[i].HP -= 2;
+								swarmIn0--;
+							}
+						}
+						//row 1
+						if (swarmRow1Array[i2].active) {
+							if (CheckCollisionRecs(fortressArray[i].AABB, swarmRow1Array[i2].AABB)) {
+								swarmRow1Array[i2].active = false;
+								fortressArray[i].HP -= 2;
+								swarmIn1--;
+							}
+						}
+						//row 2
+						if (swarmRow2Array[i2].active) {
+							if (CheckCollisionRecs(fortressArray[i].AABB, swarmRow2Array[i2].AABB)) {
+								swarmRow2Array[i2].active = false;
+								fortressArray[i].HP -= 2;
+								swarmIn2--;
+							}
+						}
+					}
+				}
+			}
+
+			//swarm->player
+			for (int i = 0; i < maxSwarmPerRow; i++) {
+				//row 0
+				if (swarmRow0Array[i].active) {
+					if (CheckCollisionRecs(player1.AABB, swarmRow0Array[i].AABB)) {
+						gameOver();
+					}
+				}
+				//row 1
+				if (swarmRow1Array[i].active) {
+					if (CheckCollisionRecs(player1.AABB, swarmRow1Array[i].AABB)) {
+						gameOver();
+					}
+				}
+				//row 2
+				if (swarmRow2Array[i].active) {
+					if (CheckCollisionRecs(player1.AABB, swarmRow2Array[i].AABB)) {
+						gameOver();
 					}
 				}
 			}
@@ -525,17 +600,14 @@ namespace game {
 			for (int i = 0; i < maxSwarmPerRow; i++) {
 				//row 0
 				if (swarmRow0Array[i].active) {
-					DrawRectangleRec(swarmRow0Array[i].AABB, GREEN);
 					DrawTextureEx(swarmTexture, swarmRow0Array[i].position, 0.0f, characterScale, WHITE);
 				}
 				//row 1
 				if (swarmRow1Array[i].active) {
-					DrawRectangleRec(swarmRow1Array[i].AABB, GREEN);
 					DrawTextureEx(swarmTexture, swarmRow1Array[i].position, 0.0f, characterScale, WHITE);
 				}
 				//row 2
 				if (swarmRow2Array[i].active) {
-					DrawRectangleRec(swarmRow2Array[i].AABB, GREEN);
 					DrawTextureEx(swarmTexture, swarmRow2Array[i].position, 0.0f, characterScale, WHITE);
 				}
 			}
