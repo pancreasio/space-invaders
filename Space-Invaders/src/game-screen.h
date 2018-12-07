@@ -11,10 +11,6 @@ namespace game {
 		void updateGameplay();
 		void drawGameplay();
 
-		enum enemyType {
-			swarm, bomber, sniper,
-		};
-
 		struct Fortress {
 			bool active;
 			unsigned int HP;
@@ -37,7 +33,6 @@ namespace game {
 
 		struct Swarm {
 			bool active;
-			enemyType type;
 			Rectangle AABB;
 			Vector2 position;
 			Vector2 speed;
@@ -45,7 +40,6 @@ namespace game {
 
 		struct Bomber {
 			bool active;
-			enemyType type;
 			Rectangle AABB;
 			Vector2 position;
 			Vector2 speed;
@@ -54,7 +48,6 @@ namespace game {
 		struct Sniper {
 			bool active;
 			double timeShot;
-			enemyType type;
 			Rectangle AABB;
 			Vector2 position;
 			Vector2 speed;

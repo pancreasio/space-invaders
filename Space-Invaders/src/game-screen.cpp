@@ -4,26 +4,40 @@ namespace game {
 	namespace gameplayspace {
 
 		const unsigned int maxFriendlyShots = 3;
-		const unsigned int maxSnipers= 6;
+		const unsigned int maxSnipers = 6;
+		const unsigned int maxSwarmPerRow = 5;
+		const unsigned int maxSwarmRows = 3;
 		const unsigned int maxEnemyShots = 6;
 		const unsigned int maxFortresses = 4;
 
 		Player player1;
-		Shot player1ShotArray[maxFriendlyShots],auxBullet;
+		Shot player1ShotArray[maxFriendlyShots], auxBullet;
 		Sniper sniperArray[maxSnipers];
+		Swarm swarmRow0Array[maxSwarmPerRow];
+		Swarm swarmRow1Array[maxSwarmPerRow];
+		Swarm swarmRow2Array[maxSwarmPerRow];
 		EnemyShot sniperArrayShots[maxEnemyShots];
 		Fortress fortressArray[maxFortresses];
 		Texture playerTexture, swarmTexture, bomberTexture, fortressTexture, shotTexture, explosionTexture, background, sniperTexture, enemyShotTexture;
-		Rectangle bulletAABB, sniperBulletAABB, fortressAABB;
+		Rectangle bulletAABB, sniperBulletAABB, fortressAABB, swarmAABB;
 		unsigned int frameSpeed, currentFrame, frameCounter, bulletCounter;
-		unsigned const int leftLimit = 30, rightLimit = 1224, timeToKill =1;
-		int snipers;
-		float bulletSpeed, sniperSpeed, sniperAcceleration, enemyShotSpeed;
+		unsigned const int leftLimit = 30, rightLimit = 1224, timeToKill = 1;
+		int snipers, swarmIn0, swarmIn1, swarmIn2, enemies;
+		float bulletSpeed, sniperSpeed, sniperAcceleration, enemyShotSpeed, swarmSpeed, swarmAcceleration;
 		const float characterScale = 1.4f, bulletScale = 2.0f;
-		bool fireSwitch, sniperFireSwitch[maxSnipers], sniperDirection;
+		bool fireSwitch, sniperFireSwitch[maxSnipers], sniperDirection, row0Direction, row1Direction, row2Direction;
 		double sniperShotCooldown = 3.0;
 
 		void returnToMenu() {
+			UnloadTexture(playerTexture);
+			UnloadTexture(swarmTexture);
+			UnloadTexture(sniperTexture);
+			UnloadTexture(bomberTexture);
+			UnloadTexture(fortressTexture);
+			UnloadTexture(shotTexture);
+			UnloadTexture(enemyShotTexture);
+			UnloadTexture(explosionTexture);
+			UnloadTexture(background);
 			menuspace::initMenu();
 			currentstate = menustate;
 		}
@@ -38,11 +52,11 @@ namespace game {
 			enemyShotTexture = LoadTexture("res/assets/enemyshot.png");
 			explosionTexture = LoadTexture("res/assets/explosionsheet.png");
 			background = LoadTexture("res/assets/background.png");
-			
+
 			//player settings
-			player1.position = { static_cast<float>(GetScreenWidth()) / 2.0f,static_cast<float>(GetScreenHeight()) / 2.0f +260.0f };
+			player1.position = { static_cast<float>(GetScreenWidth()) / 2.0f,static_cast<float>(GetScreenHeight()) / 2.0f + 260.0f };
 			player1.speed = 400.0f;
-			player1.AABB = {0.0f,0.0f,25.0f,64.0f};
+			player1.AABB = { 0.0f,0.0f,25.0f,64.0f };
 
 			//player animation settings
 			player1.scale = characterScale;
@@ -53,26 +67,38 @@ namespace game {
 			currentFrame = 0;
 
 			//bullet settings
-			bulletAABB = {0.0f,0.0f,15.0f,32.0f};
+			bulletAABB = { 0.0f,0.0f,15.0f,32.0f };
 			fireSwitch = false;
 			bulletCounter = 0;
 			bulletSpeed = 700.0f;
 
 			//fortress settings
-			fortressAABB = { 0.0f,0.0f,92.0f,40.0f};
+			fortressAABB = { 0.0f,0.0f,92.0f,40.0f };
 
 			//enemy settings
+			//snipers
 			sniperSpeed = 80.0f;
 			sniperAcceleration = 0.013f;
 			sniperDirection = true;
 			snipers = 0;
 			enemyShotSpeed = 400.0f;
-			sniperBulletAABB = {0.0f,0.0f,10.0f,32.0f};
+			sniperBulletAABB = { 0.0f,0.0f,10.0f,32.0f };
+			//swarm
+			swarmSpeed = 50.0f;
+			swarmAcceleration = 0.02f;
+			swarmIn0 = 0;
+			swarmIn1 = 0;
+			swarmIn2 = 0;
+			swarmAABB = { 0.0f,0.0f,45.0f,45.0f};
+			row0Direction = true;
+			row1Direction = false;
+			row2Direction = true;
+
 
 			//fortress initialization
-			for (int i = 0; i < maxFortresses; i++){
+			for (int i = 0; i < maxFortresses; i++) {
 				fortressArray[i].active = true;
-				fortressArray[i].position = {105.0f + static_cast<float>(i) * static_cast<float>(GetScreenWidth()) / static_cast<float>(maxFortresses), static_cast<float>(GetScreenHeight()) - 228.0f};
+				fortressArray[i].position = { 105.0f + static_cast<float>(i) * static_cast<float>(GetScreenWidth()) / static_cast<float>(maxFortresses), static_cast<float>(GetScreenHeight()) - 228.0f };
 				fortressArray[i].HP = 4;
 				fortressArray[i].AABB = fortressAABB;
 				fortressArray[i].AABB.x = fortressArray[i].position.x + 5.0f;
@@ -85,11 +111,41 @@ namespace game {
 				sniperArray[i].active = true;
 				sniperArray[i].position.y = 30.0f;
 				sniperArray[i].position.x = 50.0f + static_cast<float>(i)* static_cast<float>(GetScreenWidth()) / static_cast<float>(maxSnipers);
-				sniperArray[i].AABB = {sniperArray[i].position.x ,sniperArray[i].position.y, 58.0f,63.0f};
+				sniperArray[i].AABB = { sniperArray[i].position.x ,sniperArray[i].position.y, 58.0f,63.0f };
 				sniperArray[i].timeShot = GetTime() + 1.0f * static_cast<float>(i);
 				snipers++;
+				enemies++;
 			}
-
+			//swarm
+			for (int i = 0; i < maxSwarmPerRow; i++) {
+				//row 0
+				swarmRow0Array[i].active = true;
+				swarmRow0Array[i].position.y = 110.0f;
+				swarmRow0Array[i].position.x = 50.0f + static_cast<float>(i)* static_cast<float>(GetScreenWidth()) / static_cast<float>(maxSwarmPerRow);
+				swarmRow0Array[i].AABB = swarmAABB;
+				swarmRow0Array[i].AABB.x = swarmRow0Array[i].position.x;
+				swarmRow0Array[i].AABB.y = swarmRow0Array[i].position.y;
+				swarmIn0++;
+				enemies++;
+				//row 1
+				swarmRow1Array[i].active = true;
+				swarmRow1Array[i].position.y = 170.0f;
+				swarmRow1Array[i].position.x = 50.0f + static_cast<float>(i)* static_cast<float>(GetScreenWidth()) / static_cast<float>(maxSwarmPerRow);
+				swarmRow1Array[i].AABB = swarmAABB;
+				swarmRow1Array[i].AABB.x = swarmRow1Array[i].position.x;
+				swarmRow1Array[i].AABB.y = swarmRow1Array[i].position.y;
+				swarmIn1++;
+				enemies++;
+				//row 2
+				swarmRow2Array[i].active = true;
+				swarmRow2Array[i].position.y = 230.0f;
+				swarmRow2Array[i].position.x = 50.0f + static_cast<float>(i)* static_cast<float>(GetScreenWidth()) / static_cast<float>(maxSwarmPerRow);
+				swarmRow2Array[i].AABB = swarmAABB;
+				swarmRow2Array[i].AABB.x = swarmRow2Array[i].position.x;
+				swarmRow2Array[i].AABB.y = swarmRow2Array[i].position.y;
+				swarmIn2++;
+				enemies++;
+			}
 		}
 
 		void updateGameplay() {
@@ -114,8 +170,8 @@ namespace game {
 				fireSwitch = false;
 				for (bulletCounter = 0; bulletCounter < maxFriendlyShots; bulletCounter++) {
 					if (!player1ShotArray[bulletCounter].active) {
-						player1ShotArray[bulletCounter].position.x = player1.position.x + static_cast<float>(playerTexture.width) /2.0f - 27.0f;
-						player1ShotArray[bulletCounter].position.y = player1.position.y +8.0f;
+						player1ShotArray[bulletCounter].position.x = player1.position.x + static_cast<float>(playerTexture.width) / 2.0f - 27.0f;
+						player1ShotArray[bulletCounter].position.y = player1.position.y + 8.0f;
 						player1ShotArray[bulletCounter].active = true;
 						player1ShotArray[bulletCounter].hitFortress = false;
 						player1ShotArray[bulletCounter].birthDate = GetTime();
@@ -155,6 +211,65 @@ namespace game {
 				}
 			}
 
+			//swarm movement logic
+			for (int i = 0; i < maxSwarmPerRow; i++)
+			{
+				//row 0
+				if (swarmRow0Array[i].active) {
+					if (row0Direction) {
+						swarmRow0Array[i].position.x += swarmSpeed * GetFrameTime() + swarmAcceleration * (static_cast<float>(maxSwarmPerRow) - static_cast<float>(swarmIn0));
+					}
+					else {
+						swarmRow0Array[i].position.x -= swarmSpeed * GetFrameTime() + swarmAcceleration * (static_cast<float>(maxSwarmPerRow) - static_cast<float>(swarmIn0));
+					}
+					if (swarmRow0Array[i].position.x < leftLimit) {
+						row0Direction = true;
+					}
+					if (swarmRow0Array[i].position.x > rightLimit) {
+						row0Direction = false;
+					}
+					swarmRow0Array[i].AABB.x = swarmRow0Array[i].position.x;
+					swarmRow0Array[i].AABB.y = swarmRow0Array[i].position.y;
+				}
+
+				//row 1
+				if (swarmRow1Array[i].active) {
+					if (row1Direction) {
+						swarmRow1Array[i].position.x += swarmSpeed * GetFrameTime() + swarmAcceleration * (static_cast<float>(maxSwarmPerRow) - static_cast<float>(swarmIn1));
+					}
+					else {
+						swarmRow1Array[i].position.x -= swarmSpeed * GetFrameTime() + swarmAcceleration * (static_cast<float>(maxSwarmPerRow) - static_cast<float>(swarmIn1));
+					}
+					if (swarmRow1Array[i].position.x < leftLimit) {
+						row1Direction = true;
+					}
+					if (swarmRow1Array[i].position.x > rightLimit) {
+						row1Direction = false;
+					}
+					swarmRow1Array[i].AABB.x = swarmRow1Array[i].position.x;
+					swarmRow1Array[i].AABB.y = swarmRow1Array[i].position.y;
+				}
+
+				//row 2
+				if (swarmRow2Array[i].active) {
+					if (row2Direction) {
+						swarmRow2Array[i].position.x += swarmSpeed * GetFrameTime() + swarmAcceleration * (static_cast<float>(maxSwarmPerRow) - static_cast<float>(swarmIn2));
+					}
+					else {
+						swarmRow2Array[i].position.x -= swarmSpeed * GetFrameTime() + swarmAcceleration * (static_cast<float>(maxSwarmPerRow) - static_cast<float>(swarmIn2));
+					}
+					if (swarmRow2Array[i].position.x < leftLimit) {
+						row2Direction = true;
+					}
+					if (swarmRow2Array[i].position.x > rightLimit) {
+						row2Direction = false;
+					}
+					swarmRow2Array[i].AABB.x = swarmRow2Array[i].position.x;
+					swarmRow2Array[i].AABB.y = swarmRow2Array[i].position.y;
+				}
+
+			}
+
 			//sniper movement logic
 
 			for (int i = 0; i < maxSnipers; i++)
@@ -166,7 +281,7 @@ namespace game {
 					else {
 						sniperArray[i].position.x -= sniperSpeed * GetFrameTime() + sniperAcceleration * (static_cast<float>(maxSnipers) - static_cast<float>(snipers));
 					}
-					if (sniperArray[i].position.x <leftLimit) {
+					if (sniperArray[i].position.x < leftLimit) {
 						sniperDirection = true;
 					}
 					if (sniperArray[i].position.x > rightLimit) {
@@ -175,11 +290,11 @@ namespace game {
 					sniperArray[i].AABB.x = sniperArray[i].position.x;
 					sniperArray[i].AABB.y = sniperArray[i].position.y;
 				}
-				
+
 			}
 
 			//sniper firing logic
-			for (int i = 0; i < maxSnipers; i++){
+			for (int i = 0; i < maxSnipers; i++) {
 				if (sniperArray[i].active) {
 					if (GetTime() - sniperArray[i].timeShot > sniperShotCooldown) {
 						sniperArrayShots[i].active = true;
@@ -192,11 +307,11 @@ namespace game {
 					}
 				}
 			}
-			
-			for (int i = 0; i < maxEnemyShots; i++){
+
+			for (int i = 0; i < maxEnemyShots; i++) {
 				if (sniperArrayShots[i].active) {
 					sniperArrayShots[i].position.y += enemyShotSpeed * GetFrameTime();
-					sniperArrayShots[i].AABB.x = sniperArrayShots[i].position.x +4.0f;
+					sniperArrayShots[i].AABB.x = sniperArrayShots[i].position.x + 4.0f;
 					sniperArrayShots[i].AABB.y = sniperArrayShots[i].position.y;
 					if (sniperArrayShots[i].position.y > static_cast<float>(GetScreenHeight())) {
 						sniperArrayShots[i].active = false;
@@ -206,9 +321,9 @@ namespace game {
 
 			//collisions
 			//friendly bullet->snipers
-			for (int i = 0; i < maxFriendlyShots; i++){
+			for (int i = 0; i < maxFriendlyShots; i++) {
 				if (player1ShotArray[i].active) {
-					for (int i2 = 0; i2 < maxSnipers; i2++){
+					for (int i2 = 0; i2 < maxSnipers; i2++) {
 						if (sniperArray[i2].active) {
 							if (CheckCollisionRecs(player1ShotArray[i].AABB, sniperArray[i2].AABB)) {
 								sniperArray[i2].active = false;
@@ -235,7 +350,7 @@ namespace game {
 			}
 
 			//sniper bullets->player
-			for (int i = 0; i < maxEnemyShots; i++){
+			for (int i = 0; i < maxEnemyShots; i++) {
 				if (sniperArrayShots[i].active) {
 					if (CheckCollisionRecs(sniperArrayShots[i].AABB, player1.AABB)) {
 						returnToMenu();
@@ -259,9 +374,9 @@ namespace game {
 			}
 
 			//sniper bullets->fortresses
-			for (int i = 0; i < maxEnemyShots; i++){
+			for (int i = 0; i < maxEnemyShots; i++) {
 				if (sniperArrayShots[i].active) {
-					for (int i2 = 0; i2 < maxFortresses; i2++){
+					for (int i2 = 0; i2 < maxFortresses; i2++) {
 						if (fortressArray[i2].active) {
 							if (CheckCollisionRecs(sniperArrayShots[i].AABB, fortressArray[i2].AABB)) {
 								sniperArrayShots[i].active = false;
@@ -274,7 +389,7 @@ namespace game {
 
 
 			//fortress health logic
-			for (int i = 0; i < maxFortresses; i++){
+			for (int i = 0; i < maxFortresses; i++) {
 				if (fortressArray[i].active) {
 					if (fortressArray[i].HP <= 0) {
 						fortressArray[i].active = false;
@@ -291,7 +406,7 @@ namespace game {
 			//ship animation 
 			frameCounter++;
 
-			if (frameCounter >= (2.0 / frameSpeed)){ 
+			if (frameCounter >= (2.0 / frameSpeed)) {
 				frameCounter = 0;
 				currentFrame++;
 
@@ -310,37 +425,54 @@ namespace game {
 			DrawTextureEx(background, { 0.0f,0.0f }, 0.0f, 8.0f, WHITE);
 
 			//player 
-			DrawTexturePro(playerTexture, player1.sourceRec, player1.destRec, {static_cast<float>(playerTexture.width) / 2.0f, static_cast<float>(playerTexture.height) / 2.0f }, 0.0f, WHITE);
+			DrawTexturePro(playerTexture, player1.sourceRec, player1.destRec, { static_cast<float>(playerTexture.width) / 2.0f, static_cast<float>(playerTexture.height) / 2.0f }, 0.0f, WHITE);
 
 			//bullets
 			for (int i = 0; i < maxFriendlyShots; i++) {
 				if (player1ShotArray[i].active) {
-					DrawTextureEx(shotTexture, player1ShotArray[i].position, 0.0f, bulletScale, WHITE);					
+					DrawTextureEx(shotTexture, player1ShotArray[i].position, 0.0f, bulletScale, WHITE);
 				}
 			}
 
 			//fortresses
 			for (int i = 0; i < maxFortresses; i++) {
 				if (fortressArray[i].active) {
-					DrawTextureEx(fortressTexture, fortressArray[i].position, 0.0f, characterScale * 2.3, WHITE);
+					DrawTextureEx(fortressTexture, fortressArray[i].position, 0.0f, characterScale * 2.3f, WHITE);
 				}
 			}
 
 			//snipers
-			for (int i = 0; i < maxSnipers; i++){
+			for (int i = 0; i < maxSnipers; i++) {
 				if (sniperArray[i].active) {
-					DrawTextureEx(sniperTexture, sniperArray[i].position, 0.0f,characterScale*1.3f, WHITE);
+					DrawTextureEx(sniperTexture, sniperArray[i].position, 0.0f, characterScale*1.3f, WHITE);
 				}
 			}
-			for (int i = 0; i < maxSnipers; i++) {
+
+			//sniper bullets
+			for (int i = 0; i < maxEnemyShots; i++) {
 				if (sniperArrayShots[i].active) {
 					DrawTextureEx(enemyShotTexture, sniperArrayShots[i].position, 0.0f, bulletScale, WHITE);
 				}
 			}
 
-			//sniper bullets
-
 			//swarm
+			for (int i = 0; i < maxSwarmPerRow; i++) {
+				//row 0
+				if (swarmRow0Array[i].active) {
+					DrawRectangleRec(swarmRow0Array[i].AABB, GREEN);
+					DrawTextureEx(swarmTexture, swarmRow0Array[i].position, 0.0f, characterScale, WHITE);
+				}
+				//row 1
+				if (swarmRow1Array[i].active) {
+					DrawRectangleRec(swarmRow1Array[i].AABB, GREEN);
+					DrawTextureEx(swarmTexture, swarmRow1Array[i].position, 0.0f, characterScale, WHITE);
+				}
+				//row 2
+				if (swarmRow2Array[i].active) {
+					DrawRectangleRec(swarmRow2Array[i].AABB, GREEN);
+					DrawTextureEx(swarmTexture, swarmRow2Array[i].position, 0.0f, characterScale, WHITE);
+				}
+			}
 
 			//bombers
 		}

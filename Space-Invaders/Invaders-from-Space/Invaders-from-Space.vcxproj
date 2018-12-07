@@ -106,6 +106,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)lib\raylib-2.0.0-Win32-msvc15\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>raylib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <PostBuildEvent>
       <Command>"$(ProjectDir)setter.bat" "$(TargetDir)" "$(SolutionDir)"</Command>
