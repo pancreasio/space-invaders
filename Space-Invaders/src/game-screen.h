@@ -16,8 +16,8 @@ namespace game {
 		};
 
 		struct Fortress {
-			Rectangle sourceRec;
-			Rectangle destRec;
+			bool active;
+			unsigned int HP;
 			Rectangle AABB;
 			Vector2 position;
 		};
@@ -62,6 +62,7 @@ namespace game {
 
 		struct Shot {
 			bool active;
+			bool hitFortress;
 			double birthDate;
 			Rectangle AABB;
 			Vector2 position;

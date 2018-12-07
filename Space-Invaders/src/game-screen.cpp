@@ -14,7 +14,7 @@ namespace game {
 		EnemyShot sniperArrayShots[maxEnemyShots];
 		Fortress fortressArray[maxFortresses];
 		Texture playerTexture, swarmTexture, bomberTexture, fortressTexture, shotTexture, explosionTexture, background, sniperTexture, enemyShotTexture;
-		Rectangle bulletAABB, sniperBulletAABB;
+		Rectangle bulletAABB, sniperBulletAABB, fortressAABB;
 		unsigned int frameSpeed, currentFrame, frameCounter, bulletCounter;
 		unsigned const int leftLimit = 30, rightLimit = 1224, timeToKill =1;
 		int snipers;
@@ -58,6 +58,9 @@ namespace game {
 			bulletCounter = 0;
 			bulletSpeed = 700.0f;
 
+			//fortress settings
+			fortressAABB = { 0.0f,0.0f,92.0f,40.0f};
+
 			//enemy settings
 			sniperSpeed = 80.0f;
 			sniperAcceleration = 0.013f;
@@ -66,6 +69,15 @@ namespace game {
 			enemyShotSpeed = 400.0f;
 			sniperBulletAABB = {0.0f,0.0f,10.0f,32.0f};
 
+			//fortress initialization
+			for (int i = 0; i < maxFortresses; i++){
+				fortressArray[i].active = true;
+				fortressArray[i].position = {105.0f + static_cast<float>(i) * static_cast<float>(GetScreenWidth()) / static_cast<float>(maxFortresses), static_cast<float>(GetScreenHeight()) - 228.0f};
+				fortressArray[i].HP = 4;
+				fortressArray[i].AABB = fortressAABB;
+				fortressArray[i].AABB.x = fortressArray[i].position.x + 5.0f;
+				fortressArray[i].AABB.y = fortressArray[i].position.y + 40.0f;
+			}
 
 			//enemy initialization
 			//snipers
@@ -105,6 +117,7 @@ namespace game {
 						player1ShotArray[bulletCounter].position.x = player1.position.x + static_cast<float>(playerTexture.width) /2.0f - 27.0f;
 						player1ShotArray[bulletCounter].position.y = player1.position.y +8.0f;
 						player1ShotArray[bulletCounter].active = true;
+						player1ShotArray[bulletCounter].hitFortress = false;
 						player1ShotArray[bulletCounter].birthDate = GetTime();
 						player1ShotArray[bulletCounter].AABB = bulletAABB;
 						player1ShotArray[bulletCounter].AABB.x = player1ShotArray[bulletCounter].position.x;
@@ -122,6 +135,7 @@ namespace game {
 							}
 							player1ShotArray[0].position = player1.position;
 							player1ShotArray[0].active = true;
+							player1ShotArray[0].hitFortress = false;
 							player1ShotArray[0].birthDate = GetTime();
 							player1ShotArray[0].AABB = bulletAABB;
 							fireSwitch = true;
@@ -136,6 +150,7 @@ namespace game {
 					player1ShotArray[i].AABB.y = player1ShotArray[i].position.y;
 					if (GetTime() - player1ShotArray[i].birthDate > timeToKill) {
 						player1ShotArray[i].active = false;
+						player1ShotArray[i].hitFortress = false;
 					}
 				}
 			}
@@ -228,6 +243,34 @@ namespace game {
 				}
 			}
 
+			//friendly bullets->fortresses
+			for (int i = 0; i < maxFriendlyShots; i++) {
+				if (player1ShotArray[i].active) {
+					for (int i2 = 0; i2 < maxFortresses; i2++) {
+						if (fortressArray[i2].active && !player1ShotArray[i].hitFortress) {
+							if (CheckCollisionRecs(player1ShotArray[i].AABB, fortressArray[i2].AABB)) {
+								player1ShotArray[i].position.x = fortressArray[i2].position.x + 43.0f;
+								player1ShotArray[i].position.y = fortressArray[i2].position.y + 60.0f;
+								player1ShotArray[i].hitFortress = true;
+							}
+						}
+					}
+				}
+			}
+
+			//sniper bullets->fortresses
+
+
+
+			//fortress health logic
+			for (int i = 0; i < maxFortresses; i++){
+				if (fortressArray[i].active) {
+					if (fortressArray[i].HP <= 0) {
+						fortressArray[i].active = false;
+					}
+				}
+			}
+
 			//win logic
 			if (snipers <= 0) {
 				returnToMenu();
@@ -262,6 +305,13 @@ namespace game {
 			for (int i = 0; i < maxFriendlyShots; i++) {
 				if (player1ShotArray[i].active) {
 					DrawTextureEx(shotTexture, player1ShotArray[i].position, 0.0f, bulletScale, WHITE);					
+				}
+			}
+
+			//fortresses
+			for (int i = 0; i < maxFortresses; i++) {
+				if (fortressArray[i].active) {
+					DrawTextureEx(fortressTexture, fortressArray[i].position, 0.0f, characterScale * 2.3, WHITE);
 				}
 			}
 
