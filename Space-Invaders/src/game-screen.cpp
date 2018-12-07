@@ -31,6 +31,7 @@ namespace game {
 			//player settings
 			player1.position = { static_cast<float>(GetScreenWidth()) / 2.0f,static_cast<float>(GetScreenHeight()) / 2.0f +260.0f };
 			player1.speed = 400.0f;
+			player1.AABB = {0.0f,0.0f,25.0f,64.0f};
 
 			//player animation settings
 			player1.scale = 1.4f;
@@ -72,6 +73,8 @@ namespace game {
 				player1.sourceRec.x = static_cast<float>(currentFrame)*static_cast<float>(playerTexture.width) / 2.0f;
 			}
 			player1.destRec = { player1.position.x,player1.position.y,static_cast<float>(playerTexture.width) * player1.scale,static_cast<float>(playerTexture.height) * 2 * player1.scale };
+			player1.AABB.x = player1.position.x;
+			player1.AABB.y = player1.position.y;
 		}
 
 		void drawGameplay() {
